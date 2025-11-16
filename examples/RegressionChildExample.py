@@ -1,15 +1,16 @@
-"""This class is an example of a child class for a circular regression analysis."""
+"""This is an example of a child class for a circular regression analysis."""
 
 import numpy as np
 import pandas as pd
+
 from rbm_analyses import RegressionParent, get_sel_coeffs, residual_fun
 
 
 class RegressionChildExample(RegressionParent):
-    """This class specifies the instance variables and methods of the example of the regression analysis."""
+    """Specifies the instance variables and methods of the example of the regression analysis."""
 
     def __init__(self, reg_vars: "RegVars"):
-        """This function defines the instance variables unique to each instance.
+        """Defines the instance variables unique to each instance.
 
         See RegVarsExample for documentation.
 
@@ -62,7 +63,7 @@ class RegressionChildExample(RegressionParent):
 
     @staticmethod
     def get_datamat(df: pd.DataFrame) -> pd.DataFrame:
-        """This function creates the explanatory matrix.
+        """Creates the explanatory matrix.
 
         Parameters
         ----------
@@ -76,7 +77,9 @@ class RegressionChildExample(RegressionParent):
         """
 
         # Create custom data matrix for project
-        reg_df = pd.DataFrame(columns=["delta_t"])
+        reg_df = pd.DataFrame(
+            columns=["int", "delta_t", "a_t", "group", "subj_num", "ID"]
+        )
         reg_df["int"] = np.ones(len(df))
         reg_df["delta_t"] = df["delta_t_rad"].to_numpy()
         reg_df["a_t"] = df["a_t_rad"].to_numpy()
@@ -87,7 +90,7 @@ class RegressionChildExample(RegressionParent):
         return reg_df
 
     def get_starting_point(self) -> list:
-        """This function determines the starting points of the estimation process.
+        """Determines the starting points of the estimation process.
 
         Returns
         -------
@@ -123,7 +126,7 @@ class RegressionChildExample(RegressionParent):
         n_trials: int,
         all_sub_behav_data: pd.DataFrame = None,
     ) -> pd.DataFrame:
-        """This function samples the data for simulations.
+        """Samples the data for simulations.
 
         Parameters
         ----------

@@ -1,4 +1,4 @@
-"""This class is an example of the regression-variables class for a circular regression analysis"""
+"""Example of the regression-variables class for a circular regression analysis"""
 
 import numpy as np
 
@@ -10,15 +10,15 @@ class RegVars:
     """
 
     def __init__(self):
-        """This function defines the instance variables unique to each instance"""
+        """Defines the instance variables unique to each instance"""
 
         # Parameter names for data frame
         self.beta_0 = "beta_0"  # intercept
         self.beta_1 = "beta_1"  # coefficient for prediction error (delta)
         self.omikron_0 = "omikron_0"  # noise intercept
         self.omikron_1 = "omikron_1"  # noise slope
-        self.lambda_0 = "lambda_0"
-        self.lambda_1 = "lambda_1"
+        self.lambda_0 = "lambda_0"  # perseveration intercept
+        self.lambda_1 = "lambda_1"  # perseveration slope
 
         # Variable names of update regressors (independent of noise terms)
         self.which_update_regressors = ["int", "delta_t"]

@@ -19,7 +19,7 @@ For questions, please get in touch with me: [rasmusb@zedat.fu-berlin.de](rasmusb
 ## Built With
 
 * [Python](https://www.python.org)
-* Requires the [all-in package](https://github.com/rasmusbruckner/all_in)
+* Requires the [allinpy package](https://github.com/rasmusbruckner/allinpy)
 
 ## Author
 

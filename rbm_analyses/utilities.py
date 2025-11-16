@@ -1,18 +1,18 @@
-from typing import ItemsView, Tuple
+from typing import ItemsView
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
-from all_in import cm2inch
+from allinpy import cm2inch
 from scipy.special import expit
 
 
 def residual_fun(
     abs_dist: np.ndarray, motor_noise: float, lr_noise: float
 ) -> np.ndarray:
-    """This function computes updating noise (residuals) as a combination of two noise components.
+    """Computes updating noise (residuals) as a combination of two noise components.
 
     The noise variable is returned in terms of von-Mises concentration,
     which is a measure of precision, where variance = 1/concentration.
@@ -20,7 +20,7 @@ def residual_fun(
     Parameters
     ----------
     abs_dist : np.ndarray
-        Absolute distance (predicted update or prediction error).
+        Absolute distance in radians (predicted update or prediction error).
     motor_noise : np.ndarray
         Motor-noise parameter (imprecise motor control).
     lr_noise : np.ndarray
@@ -30,9 +30,11 @@ def residual_fun(
     -------
     np.ndarray
         Updating noise expressed as von Mises concentration.
-
-    futuretodo: add to unit tests
     """
+
+    # Check that abs_dist is positive
+    if np.any(abs_dist < 0):
+        raise ValueError("abs_dist must be positive (non-negative values only)")
 
     # Compute updating noise expressed as variance
     # (1) motor noise is updating variance due to imprecise motor control and
@@ -50,7 +52,7 @@ def residual_fun(
 def compute_persprob(
     intercept: float, slope: float, abs_pred_up: np.ndarray
 ) -> np.ndarray:
-    """This function computes the perseveration probability.
+    """Computes perseveration probability.
 
     Parameters
     ----------
@@ -72,7 +74,7 @@ def compute_persprob(
 
 
 def get_sel_coeffs(items: ItemsView[str, bool], fixed_coeffs: dict, coeffs) -> dict:
-    """This function extracts the model coefficients.
+    """Extracts the model coefficients.
 
     Parameters
     ----------
@@ -105,9 +107,12 @@ def get_sel_coeffs(items: ItemsView[str, bool], fixed_coeffs: dict, coeffs) -> d
 
 
 def parameter_summary(
-    parameters: pd.DataFrame, param_labels: list, grid_size: tuple
+    parameters: pd.DataFrame,
+    param_labels: list,
+    grid_size: tuple,
+    axis_labels: str = None,
 ) -> None:
-    """This function creates a simple plot showing parameter values.
+    """Creates a simple plot showing parameter values.
 
     Parameters
     ----------
@@ -117,6 +122,8 @@ def parameter_summary(
         Labels for the plot.
     grid_size : tuple
         Grid size for subplots (rows, cols).
+    axis_labels : str
+        Y-axis labels.
 
     Returns
     -------
@@ -124,6 +131,7 @@ def parameter_summary(
         This function does not return any value.
     """
 
+    # Figure size
     fig_width = 15
     fig_height = 10
 
@@ -151,7 +159,11 @@ def parameter_summary(
         sns.swarmplot(y=label, data=parameters, color="gray", alpha=0.7, size=3, ax=ax)
 
         ttest_result = stats.ttest_1samp(parameters[label], 0)
-        plt.ylabel(f"{label}")
+        if axis_labels is None:
+            plt.ylabel(f"{label}")
+        else:
+            label = axis_labels[i]
+            plt.ylabel(f"{label}")
         plt.title("p = " + str(np.round(ttest_result.pvalue, 3)))
         sns.despine()
 
@@ -159,28 +171,7 @@ def parameter_summary(
     plt.tight_layout()
 
 
-def weighted_circular_mean(angles: Tuple[float, float], weights: Tuple[float, float]) -> float:
-    """Computes a weighted circular mean.
-
-    Parameters
-    ----------
-    angles : Tuple[float, float]
-        Angles that are averaged.
-    weights : Tuple[float, float]
-        Weights for averaging.
-
-    Returns
-    -------
-    float
-        Weighted average.
-    """
-    angles = np.asarray(angles)
-    weights = np.asarray(weights)
-    z = weights * np.exp(1j * angles)
-    mean_angle = np.angle(np.sum(z) / np.sum(weights))
-    return mean_angle % (2 * np.pi)
-
-
+# futuretodo: switch to the function in pycircstat2
 def circ_dist(x, y):
     """Compute the pairwise signed circular distance between angles x and y.
 
@@ -214,6 +205,7 @@ def circ_dist(x, y):
     >>> circ_dist(np.pi/4, np.pi/2)
     -0.7853981633974483
     """
+
     x = np.asarray(x)
     y = np.asarray(y)
 
@@ -225,7 +217,7 @@ def circ_dist(x, y):
 
 
 def compute_bic(llh: float, n_params: int, n_trials: int) -> float:
-    """This function computes the Bayesian information criterion (BIC).
+    """Computes the Bayesian information criterion (BIC).
 
     See Stephan et al. (2009). Bayesian model selection for group studies. NeuroImage.
 
@@ -242,14 +234,13 @@ def compute_bic(llh: float, n_params: int, n_trials: int) -> float:
     -------
     float
         Computed BIC.
-
     """
 
     return (-1 * llh) - (n_params / 2) * np.log(n_trials)
 
 
 def normalize_angle(angle_rad: np.ndarray) -> np.ndarray:
-    """ This function normalizes circular angles (in radians).
+    """Normalizes circular angles (in radians).
 
     Parameters
     ----------
@@ -268,7 +259,5 @@ def normalize_angle(angle_rad: np.ndarray) -> np.ndarray:
     # Ensure the angle is within the range -180 to 180 degrees
     # futuretodo: do everything in radians
     corr_angle = (angle_deg + 180) % 360 - 180
-
-    # print('corrected angle deg is:', corr_angle)
 
     return np.deg2rad(corr_angle)

@@ -3,20 +3,22 @@
 import sys
 
 import numpy as np
-from all_in import safe_div
-from rbm_analyses.utilities import circ_dist, weighted_circular_mean
+from allinpy import safe_div
+from pycircstat2.descriptive import circ_mean
 from scipy.stats import norm, vonmises
+
+from rbm_analyses.utilities import circ_dist
 
 
 class AlAgent:
-    """This class definition specifies the properties of the object that implements the reduced Bayesian model.
+    """Specifies the properties of the object that implements the reduced Bayesian model.
 
     The model infers the mean of the outcome-generating distribution according to change-point probability and
     relative uncertainty.
     """
 
     def __init__(self, agent_vars: "AgentVars"):
-        """This function creates an agent object of class Agent based on the agent initialization input.
+        """Creates an agent object of class AlAgent based on the agent initialization input.
 
         Parameters
         ----------
@@ -44,11 +46,11 @@ class AlAgent:
         self.tot_var = np.nan  # total uncertainty
         self.C = np.nan  # term related to catch-trial helicopter cue
 
-    # Futuretodo: Create sub-function as in sampling agent
+    # Futuretodo: Create sub-functions as in sampling agent
     def learn(
         self, delta_t: float, b_t: float, v_t: int, mu_H: float, high_val: int
     ) -> None:
-        """This function implements the inference of the reduced Bayesian model.
+        """Implements the inference of the reduced Bayesian model.
 
         Parameters
         ----------
@@ -80,8 +82,8 @@ class AlAgent:
         # Update variance of predictive distribution
         self.tot_var = self.sigma**2 + self.sigma_t_sq
 
-        # Compute changepoint probability
-        # -------------------------------
+        # Compute change-point probability
+        # --------------------------------
 
         # Likelihood of prediction error given that change point occurred: (1/max_x)^s * h
         term_1 = ((1 / self.max_x) ** self.s) * self.h
@@ -138,7 +140,9 @@ class AlAgent:
             # Compute mean of inferred distribution with additional mean information
             # mu_t = (1 - w_t) * mu_{t+1} + w_t * mu_H
             if self.circular:
-                self.mu_t = weighted_circular_mean([self.mu_t, mu_H], [1 - w_t, w_t])
+                self.mu_t = circ_mean(
+                    alpha=np.array([self.mu_t, mu_H]), w=np.array([1 - w_t, w_t])
+                )
             else:
                 self.mu_t = (1 - w_t) * self.mu_t + w_t * mu_H
 
@@ -160,7 +164,8 @@ class AlAgent:
             self.tau_t = safe_div(self.C, self.C + self.sigma**2)
 
             # futuretodo: test model that does not update tau_t
-            # after catch trial
+            # after catch trial, but keep in mind subjects don't
+            # perfectly trust the cue
 
         # Update relative uncertainty of the next trial
         # ---------------------------------------------

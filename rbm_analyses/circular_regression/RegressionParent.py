@@ -1,4 +1,4 @@
-"""Parent Regression Class: Parent class for custom circular regressions"""
+"""Parent Regression Class: Parent class for custom circular regressions."""
 
 import sys
 from itertools import compress
@@ -7,22 +7,24 @@ from time import sleep
 
 import numpy as np
 import pandas as pd
-from all_in import callback
-from rbm_analyses.utilities import (compute_persprob, get_sel_coeffs,
-                                    normalize_angle, residual_fun)
+from allinpy import callback
 from scipy.optimize import minimize
 from scipy.special import logsumexp
 from scipy.stats import norm, vonmises
 from tqdm import tqdm
 
+from rbm_analyses.utilities import (compute_bic, compute_persprob,
+                                    get_sel_coeffs, normalize_angle,
+                                    residual_fun)
+
 
 class RegressionParent:
-    """This parent class specifies the instance variables and methods of the common methods of
+    """Specifies the instance variables and methods of the common methods of
     circular regression analyses.
     """
 
     def __init__(self, reg_vars: "RegVars"):
-        """This function defines the instance variables unique to each instance.
+        """Defines the instance variables unique to each instance.
 
         See project-specific RegVars in child class for documentation.
 
@@ -56,7 +58,7 @@ class RegressionParent:
     def parallel_estimation(
         self, df: pd.DataFrame, prior_columns: list
     ) -> pd.DataFrame:
-        """This function manages the parallel estimation of the regression models.
+        """Manages the parallel estimation of the regression models.
 
         Parameters
         ----------
@@ -107,6 +109,7 @@ class RegressionParent:
         values = self.which_vars.values()
         columns = list(compress(prior_columns, values))
         columns.append("llh")
+        columns.append("BIC")
         columns.append("group")
         columns.append("subj_num")
         columns.append("ID")
@@ -115,7 +118,7 @@ class RegressionParent:
         return results_df
 
     def estimation(self, df_subj_input: pd.DataFrame) -> list:
-        """This function estimates the coefficients of the mixture model.
+        """Estimates the coefficients of the circular regression model.
 
         Parameters
         ----------
@@ -131,7 +134,7 @@ class RegressionParent:
         # Control random number generator for reproducible results
         np.random.seed(self.seed)
 
-        # Get data matrix that is required for the model from child class
+        # Get data matrix required for the model from child class
         df_subj = self.get_datamat(df_subj_input)
 
         # Adjust index of this subset of variables
@@ -181,18 +184,22 @@ class RegressionParent:
                 min_llh = llh_sum
                 min_x = x
 
+        # Compute BIC
+        bic = compute_bic(min_llh, sum(values), len(df_subj))
+
         # Add results to list
         results_list = list()
         for i in range(len(min_x)):
             results_list.append(float(min_x[i]))
 
-        # Extract group and subj_num for output
+        # Extract group and ID for output
         group = int(pd.unique(df_subj["group"])[0])
         subj_num = int(pd.unique(df_subj["subj_num"])[0])
         id = pd.unique(df_subj["ID"])[0]
 
         # Add group and log-likelihood to output
         results_list.append(float(min_llh))
+        results_list.append(float(bic))
         results_list.append(group)
         results_list.append(subj_num)
         results_list.append(id)
@@ -200,7 +207,7 @@ class RegressionParent:
         return results_list
 
     def llh(self, coeffs: np.ndarray, df: pd.DataFrame) -> float:
-        """This function computes the likelihood of participant updates, given the specified parameters.
+        """Computes the likelihood of participant updates, given the specified parameters.
 
         Parameters
         ----------
@@ -334,6 +341,7 @@ class RegressionParent:
             sys.exit("\nllh incorrect")
 
         if self.use_prior:
+
             # Extract free parameters
             values = self.which_vars.values()
 
@@ -354,19 +362,19 @@ class RegressionParent:
 
     @staticmethod
     def get_datamat(df_subj_input):
-        """This function raises an error if the get_datamat function is undefined in the
+        """Raises an error if the get_datamat function is undefined in the
         project-specific regression.
         """
         raise NotImplementedError("Subclass needs to define this.")
 
     def get_starting_point(self):
-        """This function raises an error if the get_starting_point function is undefined in the
+        """Raises an error if the get_starting_point function is undefined in the
         project-specific regression.
         """
         raise NotImplementedError("Subclass needs to define this.")
 
     def sample_data(self, df_params, n_trials, all_sub_data=None):
-        """This function raises an error if the sample_data function is undefined in the
+        """Raises an error if the sample_data function is undefined in the
         project-specific regression.
         """
         raise NotImplementedError("Subclass needs to define this.")

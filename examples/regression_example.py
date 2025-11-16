@@ -12,10 +12,11 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import numpy as np
     import pandas as pd
-    from all_in import latex_plt
-    from rbm_analyses.utilities import parameter_summary
+    from allinpy import latex_plt
     from RegressionChildExample import RegressionChildExample
     from RegVarsExample import RegVars
+
+    from rbm_analyses.utilities import parameter_summary
 
     # Update matplotlib to use Latex and to change some defaults
     matplotlib = latex_plt(matplotlib)
@@ -42,7 +43,7 @@ if __name__ == "__main__":
     # ---------------------------
 
     reg_vars = RegVars()
-    reg_vars.n_subj = n_subj
+    reg_vars.n_subj = n_subj  # number of subjects
     reg_vars.n_ker = 4  # number of kernels for estimation
     reg_vars.n_sp = 5  # number of random starting points
     reg_vars.rand_sp = True  # use random starting points
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     which_params_vec = list(reg_vars.which_vars.values())
     behav_labels = [label for label, use in zip(behav_labels, which_params_vec) if use]
 
-    grid_size = (2, 3)
+    grid_size = (1, 3)
     parameter_summary(results_df, behav_labels, grid_size)
 
     # Show plot
