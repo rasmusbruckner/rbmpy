@@ -2,6 +2,9 @@
 
 Data analysis with the reduced Bayesian model (RBM).
 
+## Documentation
+See the package website for detailed [documentation](https://rasmusbruckner.github.io/rbmpy/).
+
 ### agent_rbm
 
 The package contains a Python implementation of the RBM. The model can be used for simulations and for parameter

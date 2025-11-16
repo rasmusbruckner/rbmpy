@@ -1,0 +1,41 @@
+site_name: rbmpy
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - palette.toggle
+
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-]+'
+      pipeline:
+        - stemmer
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: true
+            members_order: source
+            show_submodules: true
+
+nav:
+  - Home: index.md
+  - API Reference:
+      - Overview: reference.md
+      - Agent: agent.md
+      - Circular Regression: circular_regression.md
+      - Utilities: utilities.md
+  - About:
+      - Project Goals: about.md
