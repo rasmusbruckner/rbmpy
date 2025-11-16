@@ -36,3 +36,7 @@ For questions, please get in touch with me: [rasmusb@zedat.fu-berlin.de](rasmusb
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+See the [CHANGELOG](CHANGELOG.md) for details on recent changes, updates, and releases.
