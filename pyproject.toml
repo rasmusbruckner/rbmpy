@@ -26,7 +26,7 @@ dependencies = [
 
 [project.urls]
 "Source" = "https://github.com/rasmusbruckner/rbmpy"
-"Documentation" = "https://github.com/rasmusbruckner/rbmpy"
+"Documentation" = "https://rasmusbruckner.github.io/rbmpy/"
 
 [tool.setuptools.packages.find]
 where = ["."]
