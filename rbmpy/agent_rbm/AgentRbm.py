@@ -7,7 +7,7 @@ from allinpy import safe_div
 from pycircstat2.descriptive import circ_mean
 from scipy.stats import norm, vonmises
 
-from rbm_analyses.utilities import circ_dist
+from rbmpy.utilities import circ_dist
 
 
 class AlAgent:

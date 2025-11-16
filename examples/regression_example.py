@@ -16,7 +16,7 @@ if __name__ == "__main__":
     from RegressionChildExample import RegressionChildExample
     from RegVarsExample import RegVars
 
-    from rbm_analyses.utilities import parameter_summary
+    from rbmpy.utilities import parameter_summary
 
     # Update matplotlib to use Latex and to change some defaults
     matplotlib = latex_plt(matplotlib)

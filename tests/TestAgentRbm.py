@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from rbm_analyses import AgentVars, AlAgent
+from rbmpy import AgentVars, AlAgent
 
 
 def test_agent_init_linear():

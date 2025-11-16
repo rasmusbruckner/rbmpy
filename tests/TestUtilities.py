@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from rbm_analyses.utilities import (compute_bic, compute_persprob,
-                                    get_sel_coeffs, normalize_angle,
-                                    residual_fun)
+from rbmpy.utilities import (compute_bic, compute_persprob,
+                             get_sel_coeffs, normalize_angle,
+                             residual_fun)
 
 
 def test_residual_fun():

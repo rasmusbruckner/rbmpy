@@ -1,3 +1,10 @@
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("rbmpy")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
+
 from . import agent_rbm, circular_regression
 from .agent_rbm.AgentRbm import AlAgent
 from .agent_rbm.AgentVarsRbm import AgentVars

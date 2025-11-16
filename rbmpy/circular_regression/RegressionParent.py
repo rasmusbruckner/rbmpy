@@ -13,9 +13,9 @@ from scipy.special import logsumexp
 from scipy.stats import norm, vonmises
 from tqdm import tqdm
 
-from rbm_analyses.utilities import (compute_bic, compute_persprob,
-                                    get_sel_coeffs, normalize_angle,
-                                    residual_fun)
+from rbmpy.utilities import (compute_bic, compute_persprob,
+                             get_sel_coeffs, normalize_angle,
+                             residual_fun)
 
 
 class RegressionParent:

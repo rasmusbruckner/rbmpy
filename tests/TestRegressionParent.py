@@ -5,7 +5,7 @@ import pandas as pd
 
 from examples.RegressionChildExample import RegressionChildExample
 from examples.RegVarsExample import RegVars
-from rbm_analyses import RegressionParent
+from rbmpy import RegressionParent
 
 
 class MockMinimizeRes:
@@ -187,7 +187,7 @@ def test_estimation(monkeypatch):
 
     # Mock the minimize function where it's imported in RegressionParent
     monkeypatch.setattr(
-        "rbm_analyses.circular_regression.RegressionParent.minimize", minimize
+        "rbmpy.circular_regression.RegressionParent.minimize", minimize
     )
 
     # Create mock data frame

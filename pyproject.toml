@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rbmpy"
+version = "0.0.1"
+description = "Python tools for the Reduced Bayesian Model (RBM): simulation, fitting, and analysis."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE"}
+
+authors = [
+  { name = "Rasmus Bruckner", email = "rasmusb@zedat.fu-berlin.de" }
+]
+
+dependencies = [
+  "numpy",
+  "scipy",
+  "pandas",
+  "matplotlib",
+  "seaborn",
+  "allinpy",
+  "pycircstat2"
+]
+
+[project.urls]
+"Source" = "https://github.com/rasmusbruckner/rbmpy"
+"Documentation" = "https://github.com/rasmusbruckner/rbmpy"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rbmpy*"]

@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from rbm_analyses import RegressionParent, get_sel_coeffs, residual_fun
+from rbmpy import RegressionParent, get_sel_coeffs, residual_fun
 
 
 class RegressionChildExample(RegressionParent):
