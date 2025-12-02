@@ -34,7 +34,7 @@ nav:
   - Home: index.md
   - API Reference:
       - Overview: reference.md
-      - Agent: agent.md
+      - Agent: agent_rbm.md
       - Circular Regression: circular_regression.md
       - Utilities: utilities.md
   - About:

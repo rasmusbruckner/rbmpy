@@ -210,3 +210,4 @@ class RegressionChildExample(RegressionParent):
             df_sim = pd.concat([df_sim, df_data], ignore_index=True)
 
         return df_sim
+
