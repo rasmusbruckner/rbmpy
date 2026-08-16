@@ -36,6 +36,7 @@ nav:
       - Overview: reference.md
       - Agent: agent_rbm.md
       - Circular Regression: circular_regression.md
+      - Task: task.md
       - Utilities: utilities.md
   - About:
       - Project Goals: about.md
