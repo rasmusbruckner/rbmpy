@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../circular_regression/">
+        <link rel="prev" href="../task/">
       
       
         <link rel="next" href="../about/">
@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
       
 
@@ -418,6 +418,34 @@
     
   
     Circular Regression
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task
   
 
     
@@ -855,7 +883,7 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -970,10 +998,7 @@ which is a measure of precision, where variance = 1/concentration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
@@ -1007,7 +1032,10 @@ which is a measure of precision, where variance = 1/concentration.</p>
 <span class="normal">46</span>
 <span class="normal">47</span>
 <span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">residual_fun</span><span class="p">(</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">residual_fun</span><span class="p">(</span>
     <span class="n">abs_dist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">motor_noise</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lr_noise</span><span class="p">:</span> <span class="nb">float</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes updating noise (residuals) as a combination of two noise components.</span>
@@ -1153,10 +1181,7 @@ which is a measure of precision, where variance = 1/concentration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
@@ -1174,7 +1199,10 @@ which is a measure of precision, where variance = 1/concentration.</p>
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_persprob</span><span class="p">(</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_persprob</span><span class="p">(</span>
     <span class="n">intercept</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">slope</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">abs_pred_up</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes perseveration probability.</span>
@@ -1304,10 +1332,7 @@ which is a measure of precision, where variance = 1/concentration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 79</span>
 <span class="normal"> 80</span>
 <span class="normal"> 81</span>
 <span class="normal"> 82</span>
@@ -1334,7 +1359,10 @@ which is a measure of precision, where variance = 1/concentration.</p>
 <span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
-<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_sel_coeffs</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">ItemsView</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">fixed_coeffs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_sel_coeffs</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">ItemsView</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">fixed_coeffs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts the model coefficients.</span>
 
 <span class="sd">    Parameters</span>
@@ -1375,7 +1403,7 @@ which is a measure of precision, where variance = 1/concentration.</p>
 
 
 <h3 id="rbmpy.utilities.parameter_summary" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">parameter_summary</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">param_labels</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">axis_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">parameter_summary</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">param_labels</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">axis_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span></code>
 
 </h3>
 
@@ -1449,7 +1477,7 @@ which is a measure of precision, where variance = 1/concentration.</p>
                 <code>axis_labels</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1458,6 +1486,22 @@ which is a measure of precision, where variance = 1/concentration.</p>
             </td>
             <td>
                   <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>fig_size</code>
+            </td>
+            <td>
+                  <code><span title="tuple">tuple</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Figure size (width, height).</p>
+              </div>
+            </td>
+            <td>
+                  <code>(15, 10)</code>
             </td>
           </tr>
       </tbody>
@@ -1475,11 +1519,11 @@ which is a measure of precision, where variance = 1/concentration.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code>None</code>
+                  <code><span title="matplotlib.figure.Figure">Figure</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>This function does not return any value.</p>
+                <p>Figure object.</p>
               </div>
             </td>
           </tr>
@@ -1489,10 +1533,7 @@ which is a measure of precision, where variance = 1/concentration.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
@@ -1551,12 +1592,22 @@ which is a measure of precision, where variance = 1/concentration.</p>
 <span class="normal">168</span>
 <span class="normal">169</span>
 <span class="normal">170</span>
-<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parameter_summary</span><span class="p">(</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parameter_summary</span><span class="p">(</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">param_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
     <span class="n">grid_size</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
-    <span class="n">axis_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">axis_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fig_size</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a simple plot showing parameter values.</span>
 
 <span class="sd">    Parameters</span>
@@ -1567,21 +1618,19 @@ which is a measure of precision, where variance = 1/concentration.</p>
 <span class="sd">        Labels for the plot.</span>
 <span class="sd">    grid_size : tuple</span>
 <span class="sd">        Grid size for subplots (rows, cols).</span>
-<span class="sd">    axis_labels : str</span>
+<span class="sd">    axis_labels : list[str]</span>
 <span class="sd">        Y-axis labels.</span>
+<span class="sd">    fig_size : tuple</span>
+<span class="sd">        Figure size (width, height).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    None</span>
-<span class="sd">        This function does not return any value.</span>
+<span class="sd">    matplotlib.figure.Figure</span>
+<span class="sd">        Figure object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># Figure size</span>
-    <span class="n">fig_width</span> <span class="o">=</span> <span class="mi">15</span>
-    <span class="n">fig_height</span> <span class="o">=</span> <span class="mi">10</span>
-
     <span class="c1"># Create figure</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">cm2inch</span><span class="p">(</span><span class="n">fig_width</span><span class="p">,</span> <span class="n">fig_height</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">cm2inch</span><span class="p">(</span><span class="n">fig_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fig_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
     <span class="c1"># Cycle over parameters</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">param_labels</span><span class="p">):</span>
@@ -1609,11 +1658,18 @@ which is a measure of precision, where variance = 1/concentration.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">label</span> <span class="o">=</span> <span class="n">axis_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;p = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ttest_result</span><span class="o">.</span><span class="n">pvalue</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">ttest_result</span><span class="o">.</span><span class="n">pvalue</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
+            <span class="n">p_value_str</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$p &lt; 0.001$&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p_value_str</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$p = $&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ttest_result</span><span class="o">.</span><span class="n">pvalue</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">p_value_str</span><span class="p">)</span>
         <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">()</span>
 
     <span class="c1"># Adjust layout and show plot</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">f</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1694,7 +1750,7 @@ returned in the range (-π, π].</p>
       <tbody>
           <tr class="doc-section-item">
 <td><code>r</code></td>            <td>
-                  <code><span title="ndarray">ndarray</span></code>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1726,16 +1782,7 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
 <span class="normal">187</span>
@@ -1767,7 +1814,16 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
 <span class="normal">213</span>
 <span class="normal">214</span>
 <span class="normal">215</span>
-<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">circ_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">circ_dist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the pairwise signed circular distance between angles x and y.</span>
 
 <span class="sd">    The distance is the signed shortest distance on the circle between each pair of angles,</span>
@@ -1918,16 +1974,7 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
 <span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
@@ -1938,7 +1985,16 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
 <span class="normal">236</span>
 <span class="normal">237</span>
 <span class="normal">238</span>
-<span class="normal">239</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_bic</span><span class="p">(</span><span class="n">llh</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_params</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">compute_bic</span><span class="p">(</span><span class="n">llh</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n_params</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the Bayesian information criterion (BIC).</span>
 
 <span class="sd">    See Stephan et al. (2009). Bayesian model selection for group studies. NeuroImage.</span>
@@ -2035,16 +2091,7 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
 <span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
@@ -2056,7 +2103,16 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
 <span class="normal">260</span>
 <span class="normal">261</span>
 <span class="normal">262</span>
-<span class="normal">263</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">normalize_angle</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">normalize_angle</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalizes circular angles (in radians).</span>
 
 <span class="sd">    Parameters</span>
@@ -2146,10 +2202,10 @@ Reference: Berens, P. (2009). "CircStat: A MATLAB Toolbox for Circular Statistic
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit", "search.suggest", "search.highlight", "palette.toggle"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit", "search.suggest", "search.highlight", "palette.toggle"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
