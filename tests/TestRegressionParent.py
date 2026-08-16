@@ -219,7 +219,7 @@ def test_llh():
     """Test the llh function."""
 
     # Regression coefficients
-    coeffs = np.array([1, 1, 1])
+    coeffs = np.array([0, 1, 10])
 
     # Call regression variables
     reg_vars = RegVars()
@@ -247,14 +247,14 @@ def test_llh():
     # Compute likelihood
     llh = regression.llh(coeffs, df_subj)
 
-    assert llh == 6.133956476193537
+    assert llh == -3.2913427703385136
 
 
 def test_llh_w_omikron_1():
     """Test the llh function with learning-rate noise."""
 
     # Regression coefficients
-    coeffs = np.array([1, 1, 1, 1])
+    coeffs = np.array([0, 1, 10, 0.2])
 
     # Call regression variables
     reg_vars = RegVars()
@@ -282,14 +282,14 @@ def test_llh_w_omikron_1():
     # Compute likelihood
     llh = regression.llh(coeffs, df_subj)
 
-    assert llh == 6.880652881374994
+    assert llh == -0.17653707973173424
 
 
 def test_llh_w_extremely_high_conc():
     """Test the llh function with extremely high concentration."""
 
     # Regression coefficients
-    coeffs = np.array([1, 1, 1.0e10])
+    coeffs = np.array([1, 1, 1e-3])
 
     # Call regression variables
     reg_vars = RegVars()
@@ -324,7 +324,7 @@ def test_llh_w_extremely_low_conc():
     """Test the llh function with extremely low concentration."""
 
     # Regression coefficients
-    coeffs = np.array([1, 1, 1.0e-10])
+    coeffs = np.array([1, 1, 1.0e10])
 
     # Call regression variables
     reg_vars = RegVars()
@@ -352,14 +352,14 @@ def test_llh_w_extremely_low_conc():
     # Compute likelihood
     llh = regression.llh(coeffs, df_subj)
 
-    assert llh == 7.35150826542126
+    assert llh == 7.351508265637381
 
 
 def test_llh_w_prior():
     """Test the llh function with a prior over the regression coefficients."""
 
     # Regression coefficients
-    coeffs = np.array([1, 1, 1])
+    coeffs = np.array([0, 1, 10])
 
     # Call regression variables
     reg_vars = RegVars()
@@ -388,4 +388,41 @@ def test_llh_w_prior():
     # Compute likelihood
     llh = regression.llh(coeffs, df_subj)
 
-    assert llh == 15.246630174229747
+    assert llh == 5.700080927697698
+
+
+def test_hard_mixture_llh():
+    """Test the llh function with the hard-mixture perseveration model."""
+
+    # Regression coefficients
+    coeffs = np.array([0, 1, 10, 5, -0.2])
+
+    # Call regression variables
+    reg_vars = RegVars()
+    reg_vars.n_sp = 1
+
+    # Free parameters
+    reg_vars.which_vars = {
+        reg_vars.beta_0: True,  # intercept
+        reg_vars.beta_1: True,  # prediction error
+        reg_vars.omikron_0: True,  # motor noise
+        reg_vars.omikron_1: False,  # learning-rate noise
+        reg_vars.lambda_0: True,  # perseveration intercept
+        reg_vars.lambda_1: True,  # perseveration slope
+    }
+
+    # Create mock data frame
+    df_data = make_reg_df()
+    df_data.loc[2:, "delta_t_rad"] = 0.0
+    df_data.loc[2:, "a_t_rad"] = 0.0
+
+    # Get data matrix from child class that is required for the model
+    df_subj = RegressionChildExample.get_datamat(df_data)
+
+    # Create regression object
+    regression = RegressionChildExample(reg_vars)
+
+    # Compute likelihood
+    llh = regression.llh(coeffs, df_subj)
+
+    assert llh == -1.019090642084778

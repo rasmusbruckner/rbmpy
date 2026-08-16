@@ -4,6 +4,7 @@ import sys
 from itertools import compress
 from multiprocessing import Pool
 from time import sleep
+from typing import TypeVar
 
 import numpy as np
 import pandas as pd
@@ -13,9 +14,9 @@ from scipy.special import logsumexp
 from scipy.stats import norm, vonmises
 from tqdm import tqdm
 
-from rbmpy.utilities import (compute_bic, compute_persprob,
-                             get_sel_coeffs, normalize_angle,
-                             residual_fun)
+RegVars = TypeVar("RegVars")
+from rbmpy.utilities import (compute_bic, compute_persprob, get_sel_coeffs,
+                             normalize_angle, residual_fun)
 
 
 class RegressionParent:
@@ -23,7 +24,7 @@ class RegressionParent:
     circular regression analyses.
     """
 
-    def __init__(self, reg_vars: "RegVars"):
+    def __init__(self, reg_vars: RegVars):
         """Defines the instance variables unique to each instance.
 
         See project-specific RegVars in child class for documentation.
@@ -54,6 +55,7 @@ class RegressionParent:
         self.n_sp = reg_vars.n_sp
         self.bnds = reg_vars.bnds
         self.which_update_regressors = reg_vars.which_update_regressors
+        self.mixture_type = reg_vars.mixture_type
 
     def parallel_estimation(
         self, df: pd.DataFrame, prior_columns: list
@@ -249,17 +251,10 @@ class RegressionParent:
         # Ensure value is in range [-pi, pi]
         a_t_hat = normalize_angle(a_t_hat)
 
-        # Residuals
-        if self.which_vars["omikron_1"]:
-
-            # Compute updating noise
-            concentration = residual_fun(
-                abs(a_t_hat), sel_coeffs["omikron_0"], sel_coeffs["omikron_1"]
-            )
-
-        else:
-            # Motor noise only
-            concentration = np.repeat(sel_coeffs["omikron_0"], len(a_t_hat))
+        # Compute updating noise
+        concentration = residual_fun(
+            abs(a_t_hat), sel_coeffs["omikron_0"], sel_coeffs["omikron_1"]
+        )
 
         # Compute probability density of update
         p_a_t = vonmises.pdf(df["a_t"], loc=a_t_hat, kappa=concentration)
@@ -306,7 +301,7 @@ class RegressionParent:
 
             # Logistic function combining both parameters
             lambda_t = compute_persprob(
-                sel_coeffs["lambda_0"], sel_coeffs["lambda_1"], abs(a_t_hat)
+                sel_coeffs["lambda_0"], sel_coeffs["lambda_1"], abs(np.rad2deg(a_t_hat))
             )
 
         if self.which_vars["lambda_0"] or self.which_vars["lambda_1"]:
@@ -315,13 +310,28 @@ class RegressionParent:
             lambda_t[lambda_t == 1] = 1 - corrected_0_p
 
             # Compute mixture between linear regression and perseveration model using lambda as weight
-            llh_mix = logsumexp(
-                [
-                    np.log(delta_fun) + np.log(lambda_t),
-                    np.log((1 - lambda_t)) + llh_reg,
-                ],
-                axis=0,
-            )
+            if self.mixture_type == "soft_mixture":
+
+                # Note: the soft-mixture is not tested with participant data.
+                llh_mix = logsumexp(
+                    [
+                        np.log(delta_fun) + np.log(lambda_t),
+                        np.log((1 - lambda_t)) + llh_reg,
+                    ],
+                    axis=0,
+                )
+
+            elif self.mixture_type == "hard_mixture":
+
+                llh_mix = np.full(len(pers), np.nan)
+                llh_mix[pers == True] = np.log(lambda_t[pers == True])
+                llh_mix[pers == False] = (
+                    np.log(1 - lambda_t[pers == False]) + llh_reg[pers == False]
+                )
+
+            else:
+
+                sys.exit("mixture_type not defined")
 
             # Check for inf and nan
             if sum(np.isinf(llh_mix)) > 0:

@@ -1,28 +1,39 @@
-# RBM Analyses Package
+# rbmpy
 
-Data analysis with the reduced Bayesian model (RBM).
+Python tools for the Reduced Bayesian Model (RBM), including simulation, parameter estimation, regression, and task modeling.
+
+## Installation
+
+Install the package from PyPI with:
+
+```bash
+pip install rbmpy
+```
 
 ## Documentation
+
 See the package website for detailed [documentation](https://rasmusbruckner.github.io/rbmpy/).
 
-### agent_rbm
+## `agent_rbm`
 
-The package contains a Python implementation of the RBM. The model can be used for simulations and for parameter
-estimation. Examples coming soon. 
+Contains the `AlAgent` and `AgentVars` classes, providing a Python implementation of the RBM for simulation and parameter estimation.
 
-### circular_regression
+## `circular_regression`
 
-It also contains code for custom regression models (currently circular) that can be combined with the RBM.
-See "examples" folder for a minimal regression example.
+Contains custom regression models (currently circular) that can be combined with the RBM.
+
+## `task`
+
+Contains the `ChangePointTask` class for change-point task simulations. The agent and regression models can be applied to these task data.
 
 ## Questions?
 
-For questions, please get in touch with me: [rasmusb@zedat.fu-berlin.de](rasmusb@zedat.fu-berlin.de)
+For questions, please get in touch with me: [rasmus.bruckner@uni-hamburg.de](mailto:rasmus.bruckner@uni-hamburg.de).
 
 ## Built With
 
 * [Python](https://www.python.org)
-* Requires the [allinpy package](https://github.com/rasmusbruckner/allinpy)
+* [allinpy](https://github.com/rasmusbruckner/allinpy)
 
 ## Author
 

@@ -121,3 +121,4 @@ class RegVars:
         self.rand_sp = True  # 0 = fixed starting points, 1 = random starting points
         self.n_sp = 5  # number of starting points (if rand_sp = 1)
         self.use_prior = False  # use of prior for estimations
+        self.mixture_type = "hard_mixture"

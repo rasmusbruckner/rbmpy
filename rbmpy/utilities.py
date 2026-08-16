@@ -1,11 +1,14 @@
-from typing import ItemsView
+from typing import Any, ItemsView, Union
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
 from allinpy import cm2inch
+from numpy import floating, ndarray
+from pycircstat2.utils import angular_distance
 from scipy.special import expit
 
 
@@ -110,8 +113,9 @@ def parameter_summary(
     parameters: pd.DataFrame,
     param_labels: list,
     grid_size: tuple,
-    axis_labels: str = None,
-) -> None:
+    axis_labels: list[str] = None,
+    fig_size: tuple = (15, 10),
+) -> matplotlib.pyplot.Figure:
     """Creates a simple plot showing parameter values.
 
     Parameters
@@ -122,21 +126,19 @@ def parameter_summary(
         Labels for the plot.
     grid_size : tuple
         Grid size for subplots (rows, cols).
-    axis_labels : str
+    axis_labels : list[str]
         Y-axis labels.
+    fig_size : tuple
+        Figure size (width, height).
 
     Returns
     -------
-    None
-        This function does not return any value.
+    matplotlib.figure.Figure
+        Figure object.
     """
 
-    # Figure size
-    fig_width = 15
-    fig_height = 10
-
     # Create figure
-    plt.figure(figsize=cm2inch(fig_width, fig_height))
+    f = plt.figure(figsize=cm2inch(fig_size[0], fig_size[1]))
 
     # Cycle over parameters
     for i, label in enumerate(param_labels):
@@ -164,11 +166,18 @@ def parameter_summary(
         else:
             label = axis_labels[i]
             plt.ylabel(f"{label}")
-        plt.title("p = " + str(np.round(ttest_result.pvalue, 3)))
+
+        if ttest_result.pvalue < 0.001:
+            p_value_str = r"$p < 0.001$"
+        else:
+            p_value_str = r"$p = $" + str(np.round(ttest_result.pvalue, 3))
+        plt.title(p_value_str)
         sns.despine()
 
     # Adjust layout and show plot
     plt.tight_layout()
+
+    return f
 
 
 # futuretodo: switch to the function in pycircstat2

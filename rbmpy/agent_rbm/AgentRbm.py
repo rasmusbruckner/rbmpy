@@ -1,4 +1,4 @@
-"""Agent: Implementation of the reduced Bayesian model."""
+"""Agent: Implementation of the Reduced Bayesian Model (RBM)."""
 
 import sys
 
@@ -7,6 +7,7 @@ from allinpy import safe_div
 from pycircstat2.descriptive import circ_mean
 from scipy.stats import norm, vonmises
 
+from rbmpy.agent_rbm.AgentVarsRbm import AgentVars
 from rbmpy.utilities import circ_dist
 
 
@@ -17,7 +18,7 @@ class AlAgent:
     relative uncertainty.
     """
 
-    def __init__(self, agent_vars: "AgentVars"):
+    def __init__(self, agent_vars: AgentVars):
         """Creates an agent object of class AlAgent based on the agent initialization input.
 
         Parameters

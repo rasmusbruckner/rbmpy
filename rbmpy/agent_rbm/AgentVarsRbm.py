@@ -8,7 +8,7 @@ class AgentVars:
     """
 
     def __init__(self):
-        # Determines the default agent variables.
+        """Determines the default agent variables."""
 
         self.s = 1  # surprise sensitivity
         self.h = 0.1  # hazard rate
