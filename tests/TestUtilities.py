@@ -7,7 +7,7 @@ from rbmpy.utilities import (compute_bic, compute_persprob,
 
 
 def test_residual_fun():
-    """Tests the residual function of the RBM."""
+    """Tests the residual function of the RBM. Circular case."""
 
     kappa_up = residual_fun(np.array(np.pi), 10, 0.5)
     assert kappa_up == pytest.approx(0.3282806350011744)
@@ -15,6 +15,19 @@ def test_residual_fun():
     with pytest.raises(ValueError):
         residual_fun(np.array(-0.5), 10, 0.5)
 
+
+def test_residual_fun_linear():
+    """Tests the residual function of the RBM. Linear case."""
+
+    motor_noise = 10
+    kappa_up = residual_fun(np.array(10), motor_noise, 0.5, circular=False)
+    assert kappa_up == pytest.approx(0.0044444444444444444)
+
+    kappa_up = residual_fun(np.array(10), motor_noise, 0, circular=False)
+    assert motor_noise == pytest.approx(np.sqrt(1/kappa_up))
+
+    with pytest.raises(ValueError):
+        residual_fun(np.array(-0.5), 10, 0.5, circular=False)
 
 def test_compute_persprob():
     """Tests the perseveration probability function of the RBM."""
@@ -75,14 +88,30 @@ def test_get_sel_coeffs_overflow():
         get_sel_coeffs(items, fixed, coeffs)
 
 
-def test_bic():
-    """Tests the computation of the Bayesian information criterion."""
+def test_bic_stephan():
+    """Tests the computation of the Bayesian information criterion.
+
+    Formula from Stephan et al. (2009)
+    """
 
     llh = -120
     n_params = 9
     n_trials = 398
     bic = compute_bic(llh, n_params, n_trials)
     assert bic == 93.06096597622003
+
+
+def test_bic_canonical():
+    """Tests the computation of the Bayesian information criterion.
+
+    Canonical formula from Schwarz
+    """
+
+    llh = -120
+    n_params = 9
+    n_trials = 398
+    bic = compute_bic(llh, n_params, n_trials, formula="canonical")
+    assert bic == -2*93.06096597622003
 
 
 def test_normalize_angle_pos_outside():

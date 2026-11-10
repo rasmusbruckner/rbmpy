@@ -122,3 +122,6 @@ class RegVars:
         self.n_sp = 5  # number of starting points (if rand_sp = 1)
         self.use_prior = False  # use of prior for estimations
         self.mixture_type = "hard_mixture"
+        self.bin_width = np.nan
+        self.circular = True
+        self.min_prob = 1e-10

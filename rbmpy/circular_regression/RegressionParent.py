@@ -56,6 +56,9 @@ class RegressionParent:
         self.bnds = reg_vars.bnds
         self.which_update_regressors = reg_vars.which_update_regressors
         self.mixture_type = reg_vars.mixture_type
+        self.bin_width = reg_vars.bin_width
+        self.circular = reg_vars.circular
+        self.min_prob = reg_vars.min_prob
 
     def parallel_estimation(
         self, df: pd.DataFrame, prior_columns: list
@@ -187,7 +190,7 @@ class RegressionParent:
                 min_x = x
 
         # Compute BIC
-        bic = compute_bic(min_llh, sum(values), len(df_subj))
+        bic = compute_bic(min_llh, sum(values), len(df_subj), formula="canonical")
 
         # Add results to list
         results_list = list()
@@ -225,7 +228,7 @@ class RegressionParent:
         """
 
         # Initialize small value that replaces zero probabilities for numerical stability
-        corrected_0_p = 1e-10
+        corrected_0_p = self.min_prob
 
         # Extract parameters
         sel_coeffs = get_sel_coeffs(
@@ -248,19 +251,29 @@ class RegressionParent:
         # Compute predicted update
         a_t_hat = lr_mat @ np.array(update_regressors)  # matrix multiplication
 
-        # Ensure value is in range [-pi, pi]
-        a_t_hat = normalize_angle(a_t_hat)
+        if self.circular:
+            # Ensure value is in range [-pi, pi]
+            a_t_hat = normalize_angle(a_t_hat)
 
         # Compute updating noise
         concentration = residual_fun(
-            abs(a_t_hat), sel_coeffs["omikron_0"], sel_coeffs["omikron_1"]
+            abs(a_t_hat),
+            sel_coeffs["omikron_0"],
+            sel_coeffs["omikron_1"],
+            circular=self.circular,
         )
 
         # Compute probability density of update
-        p_a_t = vonmises.pdf(df["a_t"], loc=a_t_hat, kappa=concentration)
-        p_a_t[p_a_t == 0] = (
-            corrected_0_p  # adjust zeros to small value for numerical stability
-        )
+        if self.circular:
+            p_a_t = vonmises.pdf(df["a_t"], loc=a_t_hat, kappa=concentration)
+        else:
+            p_a_t = norm.pdf(df["a_t"], loc=a_t_hat, scale=np.sqrt(1 / concentration))
+
+        if not np.isnan(self.bin_width):
+            p_a_t = p_a_t * self.bin_width
+
+        # Adjust small values for numerical stability
+        p_a_t = np.maximum(p_a_t, corrected_0_p)
 
         # Check for inf and nan
         if sum(np.isinf(p_a_t)) > 0:
@@ -280,15 +293,11 @@ class RegressionParent:
         # Identify perseveration trials
         pers = df["a_t"] == 0
 
-        # Adjust for probabilities on the edge
-        delta_fun = np.full(len(pers), np.nan)
-        delta_fun[pers == 1] = 1 - corrected_0_p
-        delta_fun[pers == 0] = corrected_0_p
+        # Log-probability under the perseveration model:
+        # Exact 1.0 (log = 0.0) when pers is True, exact 0.0 (log = -inf) elsewhere
+        llh_pers = np.full(len(pers), -np.inf)
+        llh_pers[pers] = 0.0
 
-        # Note: keep in mind that this has not been systematically validated with participant data
-        # the setup works for simulated data based on a uniform distribution which has more large-scale PEs
-        # than actual data. For actual data, some adjustments might be necessary, such as parameter ranges, parameter
-        # combinations, or potentially in degrees instead of radians.
         lambda_t = None
         if self.which_vars["lambda_0"] and not self.which_vars["lambda_1"]:
 
@@ -299,24 +308,26 @@ class RegressionParent:
             self.which_vars["lambda_0"] and self.which_vars["lambda_1"]
         ):
 
+            # Scale predicted update appropriately for the logistic link
+            pers_input = abs(np.rad2deg(a_t_hat)) if self.circular else abs(a_t_hat)
+
             # Logistic function combining both parameters
             lambda_t = compute_persprob(
-                sel_coeffs["lambda_0"], sel_coeffs["lambda_1"], abs(np.rad2deg(a_t_hat))
+                sel_coeffs["lambda_0"], sel_coeffs["lambda_1"], pers_input
             )
 
         if self.which_vars["lambda_0"] or self.which_vars["lambda_1"]:
 
-            lambda_t[lambda_t == 0] = corrected_0_p
-            lambda_t[lambda_t == 1] = 1 - corrected_0_p
+            # Safe boundary clamping
+            np.clip(lambda_t, corrected_0_p, 1.0 - corrected_0_p, out=lambda_t)
 
             # Compute mixture between linear regression and perseveration model using lambda as weight
             if self.mixture_type == "soft_mixture":
 
-                # Note: the soft-mixture is not tested with participant data.
                 llh_mix = logsumexp(
                     [
-                        np.log(delta_fun) + np.log(lambda_t),
-                        np.log((1 - lambda_t)) + llh_reg,
+                        np.log(lambda_t) + llh_pers,
+                        np.log(1.0 - lambda_t) + llh_reg,
                     ],
                     axis=0,
                 )

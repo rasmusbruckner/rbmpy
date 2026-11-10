@@ -13,7 +13,7 @@ from scipy.special import expit
 
 
 def residual_fun(
-    abs_dist: np.ndarray, motor_noise: float, lr_noise: float
+    abs_dist: np.ndarray, motor_noise: float, lr_noise: float, circular: bool = True
 ) -> np.ndarray:
     """Computes updating noise (residuals) as a combination of two noise components.
 
@@ -28,6 +28,8 @@ def residual_fun(
         Motor-noise parameter (imprecise motor control).
     lr_noise : np.ndarray
         Learning-rate-noise parameter (more noise for larger updates).
+    circular : bool, optional
+        Outcome space is circular, by default True. Aotherwes, the outcome space is linear.
 
     Returns
     -------
@@ -42,12 +44,18 @@ def residual_fun(
     # Compute updating noise expressed as variance
     # (1) motor noise is updating variance due to imprecise motor control and
     # (2) learning-rate noise models more noise for larger updates
-    up_noise = motor_noise + lr_noise * (np.rad2deg(abs_dist))
+    if circular:
+        up_noise = motor_noise + lr_noise * (np.rad2deg(abs_dist))
 
-    # Convert std of update distribution to radians and kappa
-    up_noise_radians = np.deg2rad(up_noise)
-    up_var_radians = up_noise_radians**2
-    kappa_up = 1 / up_var_radians
+        # Convert std of update distribution to radians and kappa
+        up_noise_radians = np.deg2rad(up_noise)
+        up_var_radians = up_noise_radians ** 2
+        kappa_up = 1 / up_var_radians
+
+    else:
+        up_noise = motor_noise + lr_noise * abs_dist
+        up_var = up_noise**2
+        kappa_up = 1 / up_var
 
     return kappa_up
 
@@ -225,7 +233,7 @@ def circ_dist(x, y):
     return r
 
 
-def compute_bic(llh: float, n_params: int, n_trials: int) -> float:
+def compute_bic(llh: float, n_params: int, n_trials: int, formula: str="stephan") -> float:
     """Computes the Bayesian information criterion (BIC).
 
     See Stephan et al. (2009). Bayesian model selection for group studies. NeuroImage.
@@ -238,6 +246,8 @@ def compute_bic(llh: float, n_params: int, n_trials: int) -> float:
         Number of free parameters.
     n_trials : int
         Number of trials.
+    formula : str
+        Formula used to compute BIC ("stephan": default Stephan et al. 2009 vs. "canonical")
 
     Returns
     -------
@@ -245,7 +255,16 @@ def compute_bic(llh: float, n_params: int, n_trials: int) -> float:
         Computed BIC.
     """
 
-    return (-1 * llh) - (n_params / 2) * np.log(n_trials)
+    if formula == "stephan":
+        # Higher is better (Stephan / SPM log model evidence)
+        bic = (-1 * llh) - (n_params / 2) * np.log(n_trials)
+    elif formula == "canonical":
+        # Lower is better (Schwarz BIC: k*ln(n) - 2*log(L) = k*ln(n) + 2*NLL)
+        bic = n_params * np.log(n_trials) + 2 * llh
+    else:
+        raise ValueError("formula not defined")
+
+    return bic
 
 
 def normalize_angle(angle_rad: np.ndarray) -> np.ndarray:

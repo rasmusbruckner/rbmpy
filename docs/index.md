@@ -24,7 +24,7 @@ vars = AgentVars()
 agent = AlAgent(vars)
 
 # Example: compute perseveration probability
-p = compute_persprob([0.1, 0.2, 0.3])
+p = compute_persprob(0.1, 0.2, 0.3)
 print(p)
 ```
 
