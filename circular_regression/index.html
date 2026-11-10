@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
       
 
@@ -1391,7 +1391,18 @@ circular regression analyses.</p>
 <span class="normal">387</span>
 <span class="normal">388</span>
 <span class="normal">389</span>
-<span class="normal">390</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RegressionParent</span><span class="p">:</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RegressionParent</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Specifies the instance variables and methods of the common methods of</span>
 <span class="sd">    circular regression analyses.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1428,6 +1439,9 @@ circular regression analyses.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">bnds</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">bnds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">which_update_regressors</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">which_update_regressors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mixture_type</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">mixture_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_width</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">bin_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circular</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">circular</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_prob</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">min_prob</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">parallel_estimation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">prior_columns</span><span class="p">:</span> <span class="nb">list</span>
@@ -1559,7 +1573,7 @@ circular regression analyses.</p>
                 <span class="n">min_x</span> <span class="o">=</span> <span class="n">x</span>
 
         <span class="c1"># Compute BIC</span>
-        <span class="n">bic</span> <span class="o">=</span> <span class="n">compute_bic</span><span class="p">(</span><span class="n">min_llh</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_subj</span><span class="p">))</span>
+        <span class="n">bic</span> <span class="o">=</span> <span class="n">compute_bic</span><span class="p">(</span><span class="n">min_llh</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_subj</span><span class="p">),</span> <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;canonical&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add results to list</span>
         <span class="n">results_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -1597,7 +1611,7 @@ circular regression analyses.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Initialize small value that replaces zero probabilities for numerical stability</span>
-        <span class="n">corrected_0_p</span> <span class="o">=</span> <span class="mf">1e-10</span>
+        <span class="n">corrected_0_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_prob</span>
 
         <span class="c1"># Extract parameters</span>
         <span class="n">sel_coeffs</span> <span class="o">=</span> <span class="n">get_sel_coeffs</span><span class="p">(</span>
@@ -1620,19 +1634,29 @@ circular regression analyses.</p>
         <span class="c1"># Compute predicted update</span>
         <span class="n">a_t_hat</span> <span class="o">=</span> <span class="n">lr_mat</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">update_regressors</span><span class="p">)</span>  <span class="c1"># matrix multiplication</span>
 
-        <span class="c1"># Ensure value is in range [-pi, pi]</span>
-        <span class="n">a_t_hat</span> <span class="o">=</span> <span class="n">normalize_angle</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
+            <span class="c1"># Ensure value is in range [-pi, pi]</span>
+            <span class="n">a_t_hat</span> <span class="o">=</span> <span class="n">normalize_angle</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">)</span>
 
         <span class="c1"># Compute updating noise</span>
         <span class="n">concentration</span> <span class="o">=</span> <span class="n">residual_fun</span><span class="p">(</span>
-            <span class="nb">abs</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">),</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_0&quot;</span><span class="p">],</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_1&quot;</span><span class="p">]</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">),</span>
+            <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_0&quot;</span><span class="p">],</span>
+            <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_1&quot;</span><span class="p">],</span>
+            <span class="n">circular</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Compute probability density of update</span>
-        <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">vonmises</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">a_t_hat</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="n">concentration</span><span class="p">)</span>
-        <span class="n">p_a_t</span><span class="p">[</span><span class="n">p_a_t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">corrected_0_p</span>  <span class="c1"># adjust zeros to small value for numerical stability</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
+            <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">vonmises</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">a_t_hat</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="n">concentration</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">a_t_hat</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">concentration</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_width</span><span class="p">):</span>
+            <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">p_a_t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_width</span>
+
+        <span class="c1"># Adjust small values for numerical stability</span>
+        <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">p_a_t</span><span class="p">,</span> <span class="n">corrected_0_p</span><span class="p">)</span>
 
         <span class="c1"># Check for inf and nan</span>
         <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">p_a_t</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1652,15 +1676,11 @@ circular regression analyses.</p>
         <span class="c1"># Identify perseveration trials</span>
         <span class="n">pers</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
 
-        <span class="c1"># Adjust for probabilities on the edge</span>
-        <span class="n">delta_fun</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-        <span class="n">delta_fun</span><span class="p">[</span><span class="n">pers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">corrected_0_p</span>
-        <span class="n">delta_fun</span><span class="p">[</span><span class="n">pers</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">corrected_0_p</span>
+        <span class="c1"># Log-probability under the perseveration model:</span>
+        <span class="c1"># Exact 1.0 (log = 0.0) when pers is True, exact 0.0 (log = -inf) elsewhere</span>
+        <span class="n">llh_pers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pers</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="n">llh_pers</span><span class="p">[</span><span class="n">pers</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-        <span class="c1"># Note: keep in mind that this has not been systematically validated with participant data</span>
-        <span class="c1"># the setup works for simulated data based on a uniform distribution which has more large-scale PEs</span>
-        <span class="c1"># than actual data. For actual data, some adjustments might be necessary, such as parameter ranges, parameter</span>
-        <span class="c1"># combinations, or potentially in degrees instead of radians.</span>
         <span class="n">lambda_t</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">]:</span>
 
@@ -1671,24 +1691,26 @@ circular regression analyses.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">]</span>
         <span class="p">):</span>
 
+            <span class="c1"># Scale predicted update appropriately for the logistic link</span>
+            <span class="n">pers_input</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span> <span class="k">else</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">)</span>
+
             <span class="c1"># Logistic function combining both parameters</span>
             <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">compute_persprob</span><span class="p">(</span>
-                <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">],</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">],</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">))</span>
+                <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">],</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">],</span> <span class="n">pers_input</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">]:</span>
 
-            <span class="n">lambda_t</span><span class="p">[</span><span class="n">lambda_t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">corrected_0_p</span>
-            <span class="n">lambda_t</span><span class="p">[</span><span class="n">lambda_t</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">corrected_0_p</span>
+            <span class="c1"># Safe boundary clamping</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lambda_t</span><span class="p">,</span> <span class="n">corrected_0_p</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">corrected_0_p</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">lambda_t</span><span class="p">)</span>
 
             <span class="c1"># Compute mixture between linear regression and perseveration model using lambda as weight</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mixture_type</span> <span class="o">==</span> <span class="s2">&quot;soft_mixture&quot;</span><span class="p">:</span>
 
-                <span class="c1"># Note: the soft-mixture is not tested with participant data.</span>
                 <span class="n">llh_mix</span> <span class="o">=</span> <span class="n">logsumexp</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">delta_fun</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lambda_t</span><span class="p">),</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lambda_t</span><span class="p">))</span> <span class="o">+</span> <span class="n">llh_reg</span><span class="p">,</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lambda_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">llh_pers</span><span class="p">,</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">lambda_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">llh_reg</span><span class="p">,</span>
                     <span class="p">],</span>
                     <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="p">)</span>
@@ -1855,7 +1877,10 @@ circular regression analyses.</p>
 <span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
-<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg_vars</span><span class="p">:</span> <span class="n">RegVars</span><span class="p">):</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg_vars</span><span class="p">:</span> <span class="n">RegVars</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines the instance variables unique to each instance.</span>
 
 <span class="sd">    See project-specific RegVars in child class for documentation.</span>
@@ -1887,6 +1912,9 @@ circular regression analyses.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">bnds</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">bnds</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">which_update_regressors</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">which_update_regressors</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">mixture_type</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">mixture_type</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">bin_width</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">bin_width</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">circular</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">circular</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">min_prob</span> <span class="o">=</span> <span class="n">reg_vars</span><span class="o">.</span><span class="n">min_prob</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1979,10 +2007,7 @@ circular regression analyses.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/circular_regression/RegressionParent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 63</span>
 <span class="normal"> 64</span>
 <span class="normal"> 65</span>
 <span class="normal"> 66</span>
@@ -2039,7 +2064,10 @@ circular regression analyses.</p>
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
-<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parallel_estimation</span><span class="p">(</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parallel_estimation</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">prior_columns</span><span class="p">:</span> <span class="nb">list</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages the parallel estimation of the regression models.</span>
@@ -2176,10 +2204,7 @@ circular regression analyses.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/circular_regression/RegressionParent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
@@ -2263,7 +2288,10 @@ circular regression analyses.</p>
 <span class="normal">206</span>
 <span class="normal">207</span>
 <span class="normal">208</span>
-<span class="normal">209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">estimation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_subj_input</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">estimation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_subj_input</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimates the coefficients of the circular regression model.</span>
 
 <span class="sd">    Parameters</span>
@@ -2331,7 +2359,7 @@ circular regression analyses.</p>
             <span class="n">min_x</span> <span class="o">=</span> <span class="n">x</span>
 
     <span class="c1"># Compute BIC</span>
-    <span class="n">bic</span> <span class="o">=</span> <span class="n">compute_bic</span><span class="p">(</span><span class="n">min_llh</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_subj</span><span class="p">))</span>
+    <span class="n">bic</span> <span class="o">=</span> <span class="n">compute_bic</span><span class="p">(</span><span class="n">min_llh</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_subj</span><span class="p">),</span> <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;canonical&quot;</span><span class="p">)</span>
 
     <span class="c1"># Add results to list</span>
     <span class="n">results_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -2443,10 +2471,7 @@ circular regression analyses.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/circular_regression/RegressionParent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">214</span>
 <span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
@@ -2603,7 +2628,18 @@ circular regression analyses.</p>
 <span class="normal">368</span>
 <span class="normal">369</span>
 <span class="normal">370</span>
-<span class="normal">371</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">llh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">llh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes the likelihood of participant updates, given the specified parameters.</span>
 
 <span class="sd">    Parameters</span>
@@ -2620,7 +2656,7 @@ circular regression analyses.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Initialize small value that replaces zero probabilities for numerical stability</span>
-    <span class="n">corrected_0_p</span> <span class="o">=</span> <span class="mf">1e-10</span>
+    <span class="n">corrected_0_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_prob</span>
 
     <span class="c1"># Extract parameters</span>
     <span class="n">sel_coeffs</span> <span class="o">=</span> <span class="n">get_sel_coeffs</span><span class="p">(</span>
@@ -2643,19 +2679,29 @@ circular regression analyses.</p>
     <span class="c1"># Compute predicted update</span>
     <span class="n">a_t_hat</span> <span class="o">=</span> <span class="n">lr_mat</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">update_regressors</span><span class="p">)</span>  <span class="c1"># matrix multiplication</span>
 
-    <span class="c1"># Ensure value is in range [-pi, pi]</span>
-    <span class="n">a_t_hat</span> <span class="o">=</span> <span class="n">normalize_angle</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
+        <span class="c1"># Ensure value is in range [-pi, pi]</span>
+        <span class="n">a_t_hat</span> <span class="o">=</span> <span class="n">normalize_angle</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">)</span>
 
     <span class="c1"># Compute updating noise</span>
     <span class="n">concentration</span> <span class="o">=</span> <span class="n">residual_fun</span><span class="p">(</span>
-        <span class="nb">abs</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">),</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_0&quot;</span><span class="p">],</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_1&quot;</span><span class="p">]</span>
+        <span class="nb">abs</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">),</span>
+        <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_0&quot;</span><span class="p">],</span>
+        <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;omikron_1&quot;</span><span class="p">],</span>
+        <span class="n">circular</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Compute probability density of update</span>
-    <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">vonmises</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">a_t_hat</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="n">concentration</span><span class="p">)</span>
-    <span class="n">p_a_t</span><span class="p">[</span><span class="n">p_a_t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">corrected_0_p</span>  <span class="c1"># adjust zeros to small value for numerical stability</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span><span class="p">:</span>
+        <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">vonmises</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">a_t_hat</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="n">concentration</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">a_t_hat</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">concentration</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_width</span><span class="p">):</span>
+        <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">p_a_t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_width</span>
+
+    <span class="c1"># Adjust small values for numerical stability</span>
+    <span class="n">p_a_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">p_a_t</span><span class="p">,</span> <span class="n">corrected_0_p</span><span class="p">)</span>
 
     <span class="c1"># Check for inf and nan</span>
     <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">p_a_t</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -2675,15 +2721,11 @@ circular regression analyses.</p>
     <span class="c1"># Identify perseveration trials</span>
     <span class="n">pers</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;a_t&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
 
-    <span class="c1"># Adjust for probabilities on the edge</span>
-    <span class="n">delta_fun</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-    <span class="n">delta_fun</span><span class="p">[</span><span class="n">pers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">corrected_0_p</span>
-    <span class="n">delta_fun</span><span class="p">[</span><span class="n">pers</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">corrected_0_p</span>
+    <span class="c1"># Log-probability under the perseveration model:</span>
+    <span class="c1"># Exact 1.0 (log = 0.0) when pers is True, exact 0.0 (log = -inf) elsewhere</span>
+    <span class="n">llh_pers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pers</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="n">llh_pers</span><span class="p">[</span><span class="n">pers</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
-    <span class="c1"># Note: keep in mind that this has not been systematically validated with participant data</span>
-    <span class="c1"># the setup works for simulated data based on a uniform distribution which has more large-scale PEs</span>
-    <span class="c1"># than actual data. For actual data, some adjustments might be necessary, such as parameter ranges, parameter</span>
-    <span class="c1"># combinations, or potentially in degrees instead of radians.</span>
     <span class="n">lambda_t</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">]:</span>
 
@@ -2694,24 +2736,26 @@ circular regression analyses.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">]</span>
     <span class="p">):</span>
 
+        <span class="c1"># Scale predicted update appropriately for the logistic link</span>
+        <span class="n">pers_input</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">circular</span> <span class="k">else</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">)</span>
+
         <span class="c1"># Logistic function combining both parameters</span>
         <span class="n">lambda_t</span> <span class="o">=</span> <span class="n">compute_persprob</span><span class="p">(</span>
-            <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">],</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">],</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">a_t_hat</span><span class="p">))</span>
+            <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">],</span> <span class="n">sel_coeffs</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">],</span> <span class="n">pers_input</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_0&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">which_vars</span><span class="p">[</span><span class="s2">&quot;lambda_1&quot;</span><span class="p">]:</span>
 
-        <span class="n">lambda_t</span><span class="p">[</span><span class="n">lambda_t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">corrected_0_p</span>
-        <span class="n">lambda_t</span><span class="p">[</span><span class="n">lambda_t</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">corrected_0_p</span>
+        <span class="c1"># Safe boundary clamping</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lambda_t</span><span class="p">,</span> <span class="n">corrected_0_p</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">corrected_0_p</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">lambda_t</span><span class="p">)</span>
 
         <span class="c1"># Compute mixture between linear regression and perseveration model using lambda as weight</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mixture_type</span> <span class="o">==</span> <span class="s2">&quot;soft_mixture&quot;</span><span class="p">:</span>
 
-            <span class="c1"># Note: the soft-mixture is not tested with participant data.</span>
             <span class="n">llh_mix</span> <span class="o">=</span> <span class="n">logsumexp</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">delta_fun</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lambda_t</span><span class="p">),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lambda_t</span><span class="p">))</span> <span class="o">+</span> <span class="n">llh_reg</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lambda_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">llh_pers</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">lambda_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">llh_reg</span><span class="p">,</span>
                 <span class="p">],</span>
                 <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="p">)</span>
@@ -2791,12 +2835,12 @@ project-specific regression.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/circular_regression/RegressionParent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_datamat</span><span class="p">(</span><span class="n">df_subj_input</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises an error if the get_datamat function is undefined in the</span>
 <span class="sd">    project-specific regression.</span>
@@ -2825,11 +2869,11 @@ project-specific regression.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/circular_regression/RegressionParent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_starting_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_starting_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises an error if the get_starting_point function is undefined in the</span>
 <span class="sd">    project-specific regression.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2857,11 +2901,11 @@ project-specific regression.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>rbmpy/circular_regression/RegressionParent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sample_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_params</span><span class="p">,</span> <span class="n">n_trials</span><span class="p">,</span> <span class="n">all_sub_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sample_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_params</span><span class="p">,</span> <span class="n">n_trials</span><span class="p">,</span> <span class="n">all_sub_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raises an error if the sample_data function is undefined in the</span>
 <span class="sd">    project-specific regression.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -2950,10 +2994,10 @@ project-specific regression.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit", "search.suggest", "search.highlight", "palette.toggle"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "content.action.edit", "search.suggest", "search.highlight", "palette.toggle"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
